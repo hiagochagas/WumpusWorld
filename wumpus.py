@@ -13,6 +13,61 @@ def inserir_posicao_aleatoria(elemento,tabuleiro,x_maximo,y_maximo): #insere um 
         tabuleiro[x][y]=elemento
     else:
         inserir_posicao_aleatoria(elemento,tabuleiro,x_maximo,y_maximo)
+def fedor_e_brisa(tabuleiro): #detecta fedor e brisa a partir da posição do jogador no tabuleiro
+    for linha in range(len(tabuleiro)):
+        for coluna in range(len(tabuleiro[linha])):
+            if tabuleiro[linha][coluna]=="Jogador":
+                if(linha>0 and linha<len(tabuleiro)-1 and coluna>0 and coluna<len(tabuleiro[linha])-1): #parte central do tabuleiro
+                    if(tabuleiro[linha-1][coluna]=="Wumpus" or tabuleiro[linha+1][coluna]=="Wumpus" or tabuleiro[linha][coluna-1]=="Wumpus" or tabuleiro[linha][coluna+1]=="Wumpus"):
+                        print("Você sente um fedor intenso.")
+                    if(tabuleiro[linha-1][coluna]=="Abismo" or tabuleiro[linha+1][coluna]=="Abismo" or tabuleiro[linha][coluna-1]=="Abismo" or tabuleiro[linha][coluna+1]=="Abismo"):
+                        print("Você sente uma brisa atravessar o seu corpo.")
+                elif linha==0 and coluna==0: #porta superior esquerda
+                    if(tabuleiro[linha+1][coluna]=="Wumpus" or tabuleiro[linha][coluna+1]=="Wumpus"):
+                        print("Você sente um fedor intenso.")
+                    if(tabuleiro[linha+1][coluna]=="Abismo" or tabuleiro[linha][coluna+1]=="Abismo"):
+                        print("Você sente uma brisa atravessar o seu corpo.")
+                elif linha==0 and coluna==len(tabuleiro[linha])-1: #ponta superior direita
+                    if(tabuleiro[linha+1][coluna]=="Wumpus" or tabuleiro[linha][coluna-1]=="Wumpus"):
+                        print("Você sente um fedor intenso.")
+                    if(tabuleiro[linha+1][coluna]=="Abismo" or tabuleiro[linha][coluna-1]=="Abismo"):
+                        print("Você sente uma brisa atravessar o seu corpo.")
+                elif linha==len(tabuleiro)-1 and coluna==0: #ponta inferior esquerda
+                    if(tabuleiro[linha-1][coluna]=="Wumpus" or tabuleiro[linha][coluna+1]=="Wumpus"):
+                        print("Você sente um fedor intenso.")
+                    if(tabuleiro[linha-1][coluna]=="Abismo" or tabuleiro[linha][coluna+1]=="Abismo"):
+                        print("Você sente uma brisa atravessar o seu corpo.")
+                elif linha==len(tabuleiro)-1 and coluna==len(tabuleiro[linha])-1: #ponta inferior direita
+                    if(tabuleiro[linha-1][coluna]=="Wumpus" or tabuleiro[linha][coluna-1]=="Wumpus"):
+                        print("Você sente um fedor intenso.")
+                    if(tabuleiro[linha-1][coluna]=="Abismo" or tabuleiro[linha][coluna-1]=="Abismo"):
+                        print("Você sente uma brisa atravessar o seu corpo.")
+                elif linha==0: #parte superior
+                    if(tabuleiro[linha+1][coluna]=="Wumpus" or tabuleiro[linha][coluna-1]=="Wumpus" or tabuleiro[linha][coluna+1]=="Wumpus"):
+                        print("Você sente um fedor intenso.")
+                    if(tabuleiro[linha+1][coluna]=="Abismo" or tabuleiro[linha][coluna-1]=="Abismo" or tabuleiro[linha][coluna+1]=="Abismo"):
+                        print("Você sente uma brisa atravessar o seu corpo.")
+                elif coluna==0: #coluna da esquerda
+                    if(tabuleiro[linha-1][coluna]=="Wumpus" or tabuleiro[linha+1][coluna]=="Wumpus" or tabuleiro[linha][coluna+1]=="Wumpus"):
+                        print("Você sente um fedor intenso.")
+                    if(tabuleiro[linha-1][coluna]=="Abismo" or tabuleiro[linha+1][coluna]=="Abismo" or tabuleiro[linha][coluna+1]=="Abismo"):
+                        print("Você sente uma brisa atravessar o seu corpo.")
+                elif linha==len(tabuleiro)-1: #linha inferior
+                    if(tabuleiro[linha-1][coluna]=="Wumpus" or tabuleiro[linha][coluna-1]=="Wumpus" or tabuleiro[linha][coluna+1]=="Wumpus"):
+                        print("Você sente um fedor intenso.")
+                    if(tabuleiro[linha-1][coluna]=="Abismo" or tabuleiro[linha][coluna-1]=="Abismo" or tabuleiro[linha][coluna+1]=="Abismo"):
+                        print("Você sente uma brisa atravessar o seu corpo.")
+                elif coluna==len(tabuleiro[linha])-1: #coluna da direita
+                    if(tabuleiro[linha-1][coluna]=="Wumpus" or tabuleiro[linha+1][coluna]=="Wumpus" or tabuleiro[linha][coluna-1]=="Wumpus"):
+                        print("Você sente um fedor intenso.")
+                    if(tabuleiro[linha-1][coluna]=="Abismo" or tabuleiro[linha+1][coluna]=="Abismo" or tabuleiro[linha][coluna-1]=="Abismo"):
+                        print("Você sente uma brisa atravessar o seu corpo.")
+def ouro_coletado(tabuleiro):
+    for linha in range(len(tabuleiro)):
+        for coluna in range(len(tabuleiro[linha])):
+            if tabuleiro[linha][coluna]=="Ouro":
+                return False
+    return True
 def mostra_tabuleiro(tabuleiro,linha,colunas): #mostra o tabuleiro na tela
     for i in range(linha):
         for j in range(colunas):
@@ -20,12 +75,9 @@ def mostra_tabuleiro(tabuleiro,linha,colunas): #mostra o tabuleiro na tela
         print("\n")
 def movimenta_jogador(direcao, tabuleiro):
     found=0 # verificação de encontro, pois encontrei um problema em que o personagem era movido e encontrado novamente depois quando ia para baixo ou para a direita
-    for linha in range(len(tabuleiro)): #percorre as linha do tabuleiro
-        #print("Iteração %d"%linha)
-        for coluna in range(len(tabuleiro[linha])): #percorre as colunas do tabuleiro
-            #print("Iteração %d %d"%(linha,coluna))
+    for linha in range(len(tabuleiro)): 
+        for coluna in range(len(tabuleiro[linha])): 
             if (tabuleiro[linha][coluna])=='Jogador' and found==0: # quando a posição no tabuleiro for o jogador e esse não tiver sido encontrado ainda
-                #print("Achei o jogador em %d %d"%(linha,coluna))
                 if(direcao=='w'):
                     if(linha==0):
                         print("Impossível movimentar para cima!!")
@@ -33,6 +85,8 @@ def movimenta_jogador(direcao, tabuleiro):
                     else:
                         if(verifica_posicao(tabuleiro[linha-1][coluna])==True):
                             tabuleiro[linha][coluna]=None
+                            if(tabuleiro[linha-1][coluna]=="Ouro"):
+                                print("Você nota um objeto brilhante no chão. Você capturou o Ouro!!")
                             tabuleiro[linha-1][coluna]="Jogador"
                         else:
                             return False # o jogo acabou
@@ -44,6 +98,8 @@ def movimenta_jogador(direcao, tabuleiro):
                     else:
                         if(verifica_posicao(tabuleiro[linha+1][coluna])==True):
                             tabuleiro[linha][coluna]=None
+                            if(tabuleiro[linha+1][coluna]=="Ouro"):
+                                print("Você nota um objeto brilhante no chão. Você capturou o Ouro!!")
                             tabuleiro[linha+1][coluna]="Jogador"
                         else:
                             return False # o jogo acabou
@@ -55,6 +111,8 @@ def movimenta_jogador(direcao, tabuleiro):
                     else:
                         if(verifica_posicao(tabuleiro[linha][coluna-1])==True):
                             tabuleiro[linha][coluna]=None
+                            if(tabuleiro[linha][coluna-1]=="Ouro"):
+                                print("Você nota um objeto brilhante no chão. Você capturou o Ouro!!")
                             tabuleiro[linha][coluna-1]="Jogador"
                         else:
                             return False # o jogo acabou
@@ -66,12 +124,14 @@ def movimenta_jogador(direcao, tabuleiro):
                     else:  
                         if(verifica_posicao(tabuleiro[linha][coluna+1])==True):
                             tabuleiro[linha][coluna]=None
+                            if(tabuleiro[linha][coluna+1]=="Ouro"):
+                                print("Você nota um objeto brilhante no chão. Você capturou o Ouro!!")
                             tabuleiro[linha][coluna+1]="Jogador"
                         else:
                             return False # o jogo acabou
                         found=1
     return True # o jogador não foi engolido ou caiu num abismo
-def atira_flecha(direcao,tabuleiro):
+def atira_flecha(direcao,tabuleiro,pontuacao):
     for linha in range(len(tabuleiro)): #percorre as linha do tabuleiro
         for coluna in range(len(tabuleiro[linha])): #percorre as colunas do tabuleiro
             if (tabuleiro[linha][coluna])=='Jogador': # quando a posição no tabuleiro for o jogador, atira a flecha a partir dele
@@ -86,6 +146,7 @@ def atira_flecha(direcao,tabuleiro):
                             elif(tabuleiro[linha-i][coluna]=="Wumpus"):
                                 tabuleiro[linha-i][coluna]=None #Remove o Wumpus do jogo
                                 print("Você matou o Wumpus!!!")
+                                pontuacao+=10000
                                 break
                             else:
                                 break
@@ -100,6 +161,7 @@ def atira_flecha(direcao,tabuleiro):
                             elif(tabuleiro[linha+i][coluna]=="Wumpus"):
                                 tabuleiro[linha+i][coluna]=None #Remove o Wumpus do jogo
                                 print("Você matou o Wumpus!!!")
+                                pontuacao+=10000
                                 break
                             else:
                                 break
@@ -114,6 +176,7 @@ def atira_flecha(direcao,tabuleiro):
                             elif(tabuleiro[linha][coluna-i]=="Wumpus"):
                                 tabuleiro[linha][coluna-i]=None #Remove o Wumpus do jogo
                                 print("Você matou o Wumpus!!!")
+                                pontuacao+=10000
                                 break
                             else:
                                 break
@@ -128,10 +191,12 @@ def atira_flecha(direcao,tabuleiro):
                             elif(tabuleiro[linha][coluna+i]=="Wumpus"):
                                 tabuleiro[linha][coluna+i]=None #Remove o Wumpus do jogo
                                 print("Você matou o Wumpus!!!")
+                                pontuacao+=10000
                                 break
                             else:
                                 break
                 remove_flechas(tabuleiro) #Remove as "flechas" que ficaram pelo caminho no tabuleiro
+    return pontuacao
 def remove_flechas(tabuleiro):
     for linha in range(len(tabuleiro)):
         for coluna in range(len(tabuleiro[linha])):
@@ -139,37 +204,45 @@ def remove_flechas(tabuleiro):
                 tabuleiro[linha][coluna]=None
 def inicia_jogo():
     tabuleiro=[]
+    pontuacao=0
     linhas=int(input("Com quantas linha deseja jogar?"))
     colunas=int(input("Com quantas colunas você deseja jogar?"))
     for i in range(linhas):
         tabuleiro.append([None]*colunas)
-    tabuleiro[3][0]="Jogador" #jogador começa na posição [0][0]
+    tabuleiro[0][0]="Jogador" #jogador começa na posição [0][0]
     inserir_posicao_aleatoria("Wumpus",tabuleiro,linhas,colunas) #Wumpus em posição aleatória
     inserir_posicao_aleatoria("Ouro",tabuleiro,linhas,colunas) #Ouro em posição aleatória
     for i in range(((linhas*colunas)//5)):
         inserir_posicao_aleatoria("Abismo",tabuleiro,linhas,colunas)
-    return tabuleiro
-def acao_jogador(tabuleiro):
+    acao_jogador(tabuleiro,pontuacao)
+def acao_jogador(tabuleiro,pontuacao):
     linhas=len(tabuleiro)
     colunas=len(tabuleiro[0])
     status = True #o jogador está vivo
     flecha = True #o jogador possui uma flecha
     mostra_tabuleiro(tabuleiro,linhas,colunas) # Mostra o tabuleiro
+    fedor_e_brisa(tabuleiro)
     while status: # enquanto o jogador estiver vivo
         acao=input("Qual a próxima ação do personagem?W-A-S-D-Flecha\n")
         if acao=="Flecha" and flecha==True:
             direcao_flecha=input("Qual a direção da flecha?")
-            atira_flecha(direcao_flecha,tabuleiro)
+            pontuacao=atira_flecha(direcao_flecha,tabuleiro,pontuacao)
             flecha=False
-            status=True
         elif(acao=='w' or acao=='s' or acao=='a' or acao=='d'):
             status = movimenta_jogador(acao,tabuleiro) #movimenta o jogador no tabuleiro e retorna se ele continua vivo
+            pontuacao-=1
         elif flecha==False:
             print("Você não possui mais flechas!")
+        if(tabuleiro[0][0]=="Jogador" and ouro_coletado(tabuleiro)==True):
+            pontuacao+=1000
+            break
+        fedor_e_brisa(tabuleiro)
         mostra_tabuleiro(tabuleiro,linhas,colunas)
         #print(status)
+    if(status==False):
+        pontuacao-=10000#pontuação por morte
     print('O jogo acabou')
-tabuleiro = inicia_jogo()
-acao_jogador(tabuleiro)
+    print("Sua pontuação: %d"%pontuacao)
+inicia_jogo()
 print("Qual seu nome?")
 nome=input()
