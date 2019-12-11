@@ -1,4 +1,5 @@
 import random
+import arquivos
 def verifica_posicao(posicao_desejada): #verifica se é um abismo ou Wumpus
     if(posicao_desejada=="Wumpus" or posicao_desejada=="Abismo"):
         #print("O jogo acabou")
@@ -62,7 +63,7 @@ def fedor_e_brisa(tabuleiro): #detecta fedor e brisa a partir da posição do jo
                         print("Você sente um fedor intenso.")
                     if(tabuleiro[linha-1][coluna]=="Abismo" or tabuleiro[linha+1][coluna]=="Abismo" or tabuleiro[linha][coluna-1]=="Abismo"):
                         print("Você sente uma brisa atravessar o seu corpo.")
-def ouro_coletado(tabuleiro):
+def ouro_coletado(tabuleiro): #verifica se o Ouro ainda está em jogo
     for linha in range(len(tabuleiro)):
         for coluna in range(len(tabuleiro[linha])):
             if tabuleiro[linha][coluna]=="Ouro":
@@ -202,9 +203,8 @@ def remove_flechas(tabuleiro):
         for coluna in range(len(tabuleiro[linha])):
             if tabuleiro[linha][coluna]=="Flecha":
                 tabuleiro[linha][coluna]=None
-def inicia_jogo():
+def inicia_jogo_novo(pontuacao):
     tabuleiro=[]
-    pontuacao=0
     linhas=int(input("Com quantas linha deseja jogar?"))
     colunas=int(input("Com quantas colunas você deseja jogar?"))
     for i in range(linhas):
@@ -231,18 +231,37 @@ def acao_jogador(tabuleiro,pontuacao):
         elif(acao=='w' or acao=='s' or acao=='a' or acao=='d'):
             status = movimenta_jogador(acao,tabuleiro) #movimenta o jogador no tabuleiro e retorna se ele continua vivo
             pontuacao-=1
+            if(ouro_coletado):
+                pontuacao+=1000
         elif flecha==False:
             print("Você não possui mais flechas!")
         if(tabuleiro[0][0]=="Jogador" and ouro_coletado(tabuleiro)==True):
-            pontuacao+=1000
+            pontuacao+=100
             break
         fedor_e_brisa(tabuleiro)
         mostra_tabuleiro(tabuleiro,linhas,colunas)
-        #print(status)
+        arquivos.escrever_arquivo(tabuleiro,'tabuleiro.txt')
     if(status==False):
         pontuacao-=10000#pontuação por morte
     print('O jogo acabou')
-    print("Sua pontuação: %d"%pontuacao)
-inicia_jogo()
-print("Qual seu nome?")
-nome=input()
+    arquivos.escrever_arquivo('','tabuleiro.txt')#salva um jogo vazio
+    escolha=int(input("Deseja jogar novamente?"))
+    if(escolha==1):    
+        inicia_jogo_novo(pontuacao)
+    else:
+        print("Sua pontuação: %d"%pontuacao)
+        nome=input("Qual seu nome?")
+def bem_vindo():    
+    print("Seja bem vindo ao Wumpus World:")
+    print("Deseja criar um novo tabuleiro ou continuar de onde parou?\n1-Criar um novo\n2-Continuar")
+    escolha=int(input())
+    if escolha==1:    
+        inicia_jogo_novo(0)
+    elif escolha==2:
+        try:
+            tabuleiro=arquivos.ler_arquivo('tabuleiro.txt')
+            acao_jogador(tabuleiro,0)
+        except:
+            print("Você não possui jogo salvo")
+            bem_vindo()
+bem_vindo()
