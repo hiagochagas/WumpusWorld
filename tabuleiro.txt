@@ -1,0 +1,5 @@
+None None Abismo None None None 
+None None Abismo Wumpus None None 
+Abismo None None Jogador None None 
+Abismo Abismo None Abismo None None 
+None None None Ouro None None 

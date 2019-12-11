@@ -1,0 +1,10 @@
+Hiago 100000 \n
+Marcos 3096 \n
+Ruan -10003 \n
+Mario 1000 \n
+Luigi 5 \n
+Wario -1000 \n
+Waluigi -5 \n
+Peach 1000000000000 \n
+Toad 0 \n
+Bowser 0 \n

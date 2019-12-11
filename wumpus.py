@@ -72,8 +72,11 @@ def ouro_coletado(tabuleiro): #verifica se o Ouro ainda está em jogo
 def mostra_tabuleiro(tabuleiro,linha,colunas): #mostra o tabuleiro na tela
     for i in range(linha):
         for j in range(colunas):
-            print(tabuleiro[i][j],"\t", end =" ")
+            print('{:<12}'.format(str(tabuleiro[i][j])), end =" ") 
         print("\n")
+def melhores_jogadores(leaderboards):
+    print("Melhores Jogadores:")
+    mostra_tabuleiro(leaderboards,len(leaderboards),2)
 def movimenta_jogador(direcao, tabuleiro):
     found=0 # verificação de encontro, pois encontrei um problema em que o personagem era movido e encontrado novamente depois quando ia para baixo ou para a direita
     for linha in range(len(tabuleiro)): 
@@ -216,6 +219,8 @@ def inicia_jogo_novo(pontuacao):
         inserir_posicao_aleatoria("Abismo",tabuleiro,linhas,colunas)
     acao_jogador(tabuleiro,pontuacao)
 def acao_jogador(tabuleiro,pontuacao):
+    leaderboards=[]
+    leaderboards=arquivos.ler_arquivo('leaderboards.txt')
     linhas=len(tabuleiro)
     colunas=len(tabuleiro[0])
     status = True #o jogador está vivo
@@ -224,14 +229,15 @@ def acao_jogador(tabuleiro,pontuacao):
     fedor_e_brisa(tabuleiro)
     while status: # enquanto o jogador estiver vivo
         acao=input("Qual a próxima ação do personagem?W-A-S-D-Flecha\n")
-        if acao=="Flecha" and flecha==True:
+        acao.lower()
+        if acao=="flecha" and flecha==True:
             direcao_flecha=input("Qual a direção da flecha?")
             pontuacao=atira_flecha(direcao_flecha,tabuleiro,pontuacao)
             flecha=False
         elif(acao=='w' or acao=='s' or acao=='a' or acao=='d'):
             status = movimenta_jogador(acao,tabuleiro) #movimenta o jogador no tabuleiro e retorna se ele continua vivo
             pontuacao-=1
-            if(ouro_coletado):
+            if(ouro_coletado(tabuleiro)==True):
                 pontuacao+=1000
         elif flecha==False:
             print("Você não possui mais flechas!")
@@ -251,9 +257,12 @@ def acao_jogador(tabuleiro,pontuacao):
     else:
         print("Sua pontuação: %d"%pontuacao)
         nome=input("Qual seu nome?")
+        leaderboards.append([nome,pontuacao])
+        leaderboards.sort(reverse=True, key= lambda x: int(x[1]))
+        arquivos.escrever_arquivo(leaderboards[:10],'leaderboards.txt')
 def bem_vindo():    
     print("Seja bem vindo ao Wumpus World:")
-    print("Deseja criar um novo tabuleiro ou continuar de onde parou?\n1-Criar um novo\n2-Continuar")
+    print("Deseja criar um novo tabuleiro ou continuar de onde parou?\n1-Criar um novo\n2-Continuar\n3-Melhores jogadores")
     escolha=int(input())
     if escolha==1:    
         inicia_jogo_novo(0)
@@ -264,4 +273,7 @@ def bem_vindo():
         except:
             print("Você não possui jogo salvo")
             bem_vindo()
+    elif escolha==3:
+        leaderboards=arquivos.ler_arquivo('leaderboards.txt')
+        melhores_jogadores(leaderboards)
 bem_vindo()
